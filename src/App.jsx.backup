@@ -8,11 +8,8 @@ import PriceTable from './components/PriceTable';
 import './App.css';
 
 function App() {
-  console.log('App component rendering...');
   const { data, loading, error, refetch } = useTeslaData();
   const [filters, setFilters] = useState({});
-
-  console.log('App state:', { dataLength: data?.length, loading, error });
 
   // Apply filters to data
   const filteredData = useMemo(() => {

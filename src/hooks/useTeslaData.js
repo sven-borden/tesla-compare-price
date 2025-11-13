@@ -11,20 +11,24 @@ export const useTeslaData = () => {
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
+    console.log('useTeslaData: Starting data fetch...');
     try {
       setLoading(true);
       setError(null);
       const records = await fetchTeslaData();
+      console.log('useTeslaData: Received records:', records.length);
       setData(records);
     } catch (err) {
+      console.error('useTeslaData: Error occurred:', err);
       setError(err.message);
-      console.error('Error in useTeslaData:', err);
     } finally {
       setLoading(false);
+      console.log('useTeslaData: Fetch completed');
     }
   };
 
   useEffect(() => {
+    console.log('useTeslaData: useEffect running, fetching data...');
     fetchData();
   }, []);
 

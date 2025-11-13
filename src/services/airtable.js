@@ -4,14 +4,36 @@ const API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
 const BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
 const TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME;
 
+// Debug: Log environment variables (remove in production)
+console.log('Airtable Config:', {
+  hasApiKey: !!API_KEY,
+  hasBaseId: !!BASE_ID,
+  hasTableName: !!TABLE_NAME,
+  apiKeyLength: API_KEY?.length,
+});
+
+// Check if environment variables are loaded
+if (!API_KEY || !BASE_ID || !TABLE_NAME) {
+  console.error('Missing Airtable configuration. Please check your .env file.');
+  console.error({
+    API_KEY: API_KEY ? 'Present' : 'MISSING',
+    BASE_ID: BASE_ID ? 'Present' : 'MISSING',
+    TABLE_NAME: TABLE_NAME ? 'Present' : 'MISSING',
+  });
+}
+
 // Initialize Airtable
-const base = new Airtable({ apiKey: API_KEY }).base(BASE_ID);
+const base = API_KEY && BASE_ID ? new Airtable({ apiKey: API_KEY }).base(BASE_ID) : null;
 
 /**
  * Fetch all Tesla records from Airtable
  * @returns {Promise<Array>} Array of Tesla vehicle records
  */
 export const fetchTeslaData = async () => {
+  if (!base) {
+    throw new Error('Airtable is not configured. Please check your environment variables (.env file).');
+  }
+
   try {
     const records = [];
 
@@ -30,10 +52,11 @@ export const fetchTeslaData = async () => {
         fetchNextPage();
       });
 
+    console.log(`Fetched ${records.length} records from Airtable`);
     return records;
   } catch (error) {
     console.error('Error fetching data from Airtable:', error);
-    throw new Error('Failed to fetch Tesla data from Airtable');
+    throw new Error(`Failed to fetch Tesla data from Airtable: ${error.message}`);
   }
 };
 
