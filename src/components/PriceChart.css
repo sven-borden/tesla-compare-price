@@ -1,0 +1,68 @@
+.price-chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.price-chart-container h2 {
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.chart-section {
+  margin-bottom: 40px;
+}
+
+.chart-section:last-child {
+  margin-bottom: 0;
+}
+
+.chart-section h3 {
+  margin: 0 0 20px 0;
+  color: #495057;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.custom-tooltip {
+  background: white;
+  padding: 10px 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.custom-tooltip div {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #495057;
+}
+
+.custom-tooltip strong {
+  color: #212529;
+}
+
+.no-chart-data {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .price-chart-container {
+    padding: 15px;
+  }
+
+  .chart-section {
+    margin-bottom: 30px;
+  }
+
+  .chart-section h3 {
+    font-size: 16px;
+  }
+}
