@@ -53,10 +53,10 @@ const PriceChart = ({ data }) => {
   }, [data]);
 
   // Prepare data for price vs mileage scatter plot
-  const scatterData = useMemo(() => {
-    if (!data || data.length === 0) return [];
+  const { scatterData, trendLineData } = useMemo(() => {
+    if (!data || data.length === 0) return { scatterData: [], trendLineData: [] };
 
-    return data
+    const scatter = data
       .filter(
         (vehicle) =>
           vehicle.Price &&
@@ -68,8 +68,41 @@ const PriceChart = ({ data }) => {
         mileage: parseFloat(vehicle.Mileage),
         price: parseFloat(vehicle.Price),
         model: vehicle.Model || 'Unknown',
-      }))
-      .slice(0, 100); // Limit to 100 points for performance
+      }));
+
+    // Calculate linear regression for trend line
+    const n = scatter.length;
+    if (n === 0) return { scatterData: [], trendLineData: [] };
+
+    const sumX = scatter.reduce((sum, point) => sum + point.mileage, 0);
+    const sumY = scatter.reduce((sum, point) => sum + point.price, 0);
+    const sumXY = scatter.reduce((sum, point) => sum + point.mileage * point.price, 0);
+    const sumXX = scatter.reduce((sum, point) => sum + point.mileage * point.mileage, 0);
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    // Find min and max mileage for trend line
+    const minMileage = Math.min(...scatter.map(p => p.mileage));
+    const maxMileage = Math.max(...scatter.map(p => p.mileage));
+
+    const trendLine = [
+      {
+        mileage: minMileage,
+        price: slope * minMileage + intercept,
+        trendPrice: slope * minMileage + intercept,
+      },
+      {
+        mileage: maxMileage,
+        price: slope * maxMileage + intercept,
+        trendPrice: slope * maxMileage + intercept,
+      },
+    ];
+
+    return {
+      scatterData: scatter.slice(0, 100), // Limit to 100 points for performance
+      trendLineData: trendLine,
+    };
   }, [data]);
 
   const CustomTooltip = ({ active, payload }) => {
@@ -172,7 +205,18 @@ const PriceChart = ({ data }) => {
                   : [value.toLocaleString(), 'Mileage']
               }
             />
-            <Scatter data={scatterData} fill="#4facfe" />
+            <Legend />
+            <Scatter data={scatterData} fill="#4facfe" name="Vehicles" />
+            <Line
+              data={trendLineData}
+              type="linear"
+              dataKey="trendPrice"
+              stroke="#ff6b6b"
+              strokeWidth={3}
+              dot={false}
+              name="Trend Line"
+              strokeDasharray="5 5"
+            />
           </ScatterChart>
         </ResponsiveContainer>
       </div>
