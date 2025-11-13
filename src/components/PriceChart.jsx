@@ -104,11 +104,20 @@ const PriceChart = ({ data }) => {
           <BarChart data={modelPriceData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="model" />
-            <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+            <YAxis
+              yAxisId="left"
+              tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              domain={['auto', 'auto']}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              domain={['auto', 'auto']}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Bar dataKey="average" fill="#667eea" name="Average Price" />
-            <Bar dataKey="count" fill="#43e97b" name="Listings" />
+            <Bar yAxisId="left" dataKey="average" fill="#667eea" name="Average Price" />
+            <Bar yAxisId="right" dataKey="count" fill="#43e97b" name="Listings" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -119,7 +128,10 @@ const PriceChart = ({ data }) => {
           <LineChart data={yearPriceData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
-            <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+            <YAxis
+              tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              domain={['auto', 'auto']}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line
@@ -143,12 +155,14 @@ const PriceChart = ({ data }) => {
               dataKey="mileage"
               name="Mileage"
               tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+              domain={['auto', 'auto']}
             />
             <YAxis
               type="number"
               dataKey="price"
               name="Price"
               tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              domain={['auto', 'auto']}
             />
             <Tooltip
               cursor={{ strokeDasharray: '3 3' }}
